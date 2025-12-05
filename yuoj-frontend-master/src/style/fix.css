@@ -1,0 +1,20 @@
+/* 修复 Arco Design 组件的 ResizeObserver 问题 */
+.arco-resize-observer {
+  display: none !important;
+}
+
+/* 禁用某些可能导致问题的过渡动画 */
+.arco-select-dropdown,
+.arco-dropdown,
+.arco-modal-wrapper {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* 为表格和容器添加固定尺寸 */
+.arco-table-container,
+.arco-card,
+.arco-layout {
+  min-width: 0;
+  overflow: hidden;
+}

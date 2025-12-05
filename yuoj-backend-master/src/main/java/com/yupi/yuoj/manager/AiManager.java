@@ -1,0 +1,82 @@
+package com.yupi.yuoj.manager;
+
+import cn.hutool.core.collection.CollUtil;
+import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionChoice;
+import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionRequest;
+import com.volcengine.ark.runtime.model.completion.chat.ChatMessage;
+import com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole;
+import com.volcengine.ark.runtime.service.ArkService;
+import com.yupi.yuoj.common.ErrorCode;
+import com.yupi.yuoj.exception.BusinessException;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 通用的 AI 调用类
+ */
+@Component
+public class AiManager {
+
+    @Resource
+    ArkService aiService;
+
+    private final String DEFAULT_MODEL = "deepseek-v3-250324";
+
+
+    public String doChat(String userPrompt) {
+        return doChat("", userPrompt, DEFAULT_MODEL);
+    }
+
+    public String doChat(String systemPrompt, String userPrompt) {
+        return doChat(systemPrompt, userPrompt, DEFAULT_MODEL);
+    }
+
+
+    /**
+     * 调用 AI 接口 获取响应字符串
+     *
+     * @return
+     */
+    public String doChat(String systemPrompt, String userPrompt, String model) {
+        final List<ChatMessage> messages = new ArrayList<>();
+        final ChatMessage systemMessage = ChatMessage.builder().role(ChatMessageRole.SYSTEM).content(systemPrompt).build();
+        final ChatMessage userMessage = ChatMessage.builder().role(ChatMessageRole.USER).content(userPrompt).build();
+        messages.add(systemMessage);
+        messages.add(userMessage);
+        return doChat(messages, model);
+    }
+
+    /**
+     * 调用 AI 接口 获取响应字符串（允许传入自定义的消息列表，使用自定义模型）
+     *
+     * @return
+     */
+    public String doChat(List<ChatMessage> messages) {
+        return doChat(messages, DEFAULT_MODEL);
+    }
+
+
+    /**
+     * 调用 AI 接口 获取响应字符串（允许传入自定义的消息列表）
+     *
+     * @return
+     */
+    public String doChat(List<ChatMessage> messages, String model) {
+        // 构造请求
+        ChatCompletionRequest chatCompletionRequest = ChatCompletionRequest.builder()
+//                .model("deepseek-v3-250324")
+                .model(model)
+                .messages(messages)
+                .build();
+
+        List<ChatCompletionChoice> choices = aiService.createChatCompletion(chatCompletionRequest).getChoices();
+        if (CollUtil.isNotEmpty(choices)) {
+            return (String) choices.get(0).getMessage().getContent();
+        }
+        throw new BusinessException(ErrorCode.OPERATION_ERROR, "AI 调用失败，暂无返回结果");
+//        aiService.shutdownExecutor();
+    }
+}

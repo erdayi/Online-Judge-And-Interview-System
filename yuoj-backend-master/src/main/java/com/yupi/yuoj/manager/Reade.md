@@ -1,0 +1,1 @@
+# Manager 是通用的、公共的类 便于 Controller 和 Service 直接调用复用的
