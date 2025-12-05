@@ -1,6 +1,5 @@
 # 公共配置文件
-# @author <a href="https://github.com/liyupi">程序员鱼皮</a>
-# @from <a href="https://yupi.icu">编程导航知识星球</a>
+
 spring:
   application:
     name: yuoj-backend
@@ -86,14 +85,14 @@ wx:
 # todo 需替换配置
 cos:
   client:
-    accessKey: AKIDzpSK3ZrX0FMFxRioiPtoa9VdYFk16IRP
-    secretKey: 55wb4JLAmCPPDoCMI1Xpyuc6OSJxNaaN
-    region: ap-nanjing
-    bucket: lemon-1325073195
+    accessKey: 
+    secretKey: 
+    region: 
+    bucket: 
 # 代码沙箱配置
 codesandbox:
   type: remote
 
 # AI 大模型接入 火山引擎（DeepSeek）
 ai:
-  apiKey: 8dae9d71-b635-45d4-b35c-be26d47cd049
+  apiKey: 
